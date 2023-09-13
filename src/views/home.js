@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Card, Spin } from 'antd';
+import { Row, Col, Card, Spin, Tooltip, Button, Icon, Popconfirm } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import axios from "axios";
 import StandardTable from '../components/table';
-import global from '../global';
+import { formatDate, delete_success_notification } from '../global';
 
 class Home extends PureComponent {
   constructor(props) {
@@ -46,6 +47,19 @@ class Home extends PureComponent {
     })
   }
 
+  handleDelete = value => {
+    axios.delete(`https://65005dd518c34dee0cd4cabe.mockapi.io/products/products/${value.id}`).then(
+      response => {
+        delete_success_notification(response);
+        this.getData();
+      },
+      error => {
+        global.fail_notification(error);
+        this.setState({ loading: false });
+      },
+    );
+  };
+
   render() {    
     let columns = [
       {
@@ -61,24 +75,57 @@ class Home extends PureComponent {
       {
         title: 'Oluşturulma Tarihi',
         key: 'createdAt',
-        render: (text, value) => <span>{global.formatDate(value.createdAt)}</span>,
+        render: (text, value) => <span>{formatDate(value.createdAt)}</span>,
       },      
+      {
+        title: 'Actions',
+        render: (text, record) => (
+          <div>
+            <Tooltip placement="top" title={'Edit'}>
+              <Button
+                shape="round"
+                style={{ marginRight: '5px' }}
+                size="small"
+                type="primary"
+              >
+                <EditOutlined />
+              </Button>
+            </Tooltip>
+            <Tooltip placement="top" title={'Delete'}>
+              <Popconfirm
+                title={'Are_you_sure'}
+                onConfirm={() => this.handleDelete(text, record)}
+                okText={'Yes'}
+                cancelText={'No'}
+              >
+                <Button shape="round" size="small" type="danger">
+                  {' '}
+                  <DeleteOutlined />
+                </Button>
+              </Popconfirm>
+            </Tooltip>
+          </div>
+        ),
+        key: 'actions',
+      },
     ];
     return (
       <div>
         <Row className={'content__header'}>
         </Row>
-        <div className={'content__table'}>
-          <Row>
-          <Spin size="large" spinning={this.state.tableLoading}>
-            <StandardTable 
-              dataSource={this.state.data} 
-              columns={columns} 
-              size="middle" 
-            />
-          </Spin>
-          </Row>
-        </div>
+        <Row>
+          <Col md={24} sm={24} xs={24}>
+            <Card bordered={true} bodyStyle={{ paddingBottom: '60px' }}>
+              <Spin size="large" spinning={this.state.tableLoading}>
+                <StandardTable 
+                  dataSource={this.state.data} 
+                  columns={columns} 
+                  size="large" 
+                />
+              </Spin>
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }

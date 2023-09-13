@@ -1,5 +1,5 @@
 {
-  "name": "webpack-blog",
+  "name": "Product Crud",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ant-design/icons": "^5.2.6",
     "antd": "^5.8.4",
     "axios": "^1.4.0",
     "moment": "^2.29.4",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.22.15",
     "@babel/polyfill": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
